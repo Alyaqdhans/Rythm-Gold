@@ -90,7 +90,8 @@ class Player(commands.Cog):
                     memids.append(member.id)
         if ctx.voice_client is None or not len(memids) > 0:
             if not len(memids) > 0:
-                embed = discord.Embed(colour=colour, description='🔌 **The queue has been force ended.**')
+                await ctx.voice_client.disconnect()
+                embed = discord.Embed(colour=colour, description='☠ **The queue has been force ended.**')
                 embed.set_footer(text="Because no one is in the voice channel.")
                 await ctx.send(embed=embed)
             if len(self.song_queue[ctx.guild.id]) > 0:
