@@ -82,9 +82,9 @@ class Player(commands.Cog):
 
     async def check_queue(self, ctx):
         global loop
-        members = ctx.voice_client.channel.members
-        memids = []
         if ctx.voice_client is not None:
+            members = ctx.voice_client.channel.members
+            memids = []
             for member in members:
                 if not member.bot:
                     memids.append(member.id)
