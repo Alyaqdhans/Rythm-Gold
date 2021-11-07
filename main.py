@@ -262,12 +262,9 @@ class Player(commands.Cog):
             dur = await self.time_format(vduration)
 
             emb.add_field(name="Duration", value=f"`{dur}`")
-            try:
-                await self.play_song(ctx, song)
-                await temp.edit(embed=emb)
-            except:
-                embed = discord.Embed(colour=colour, description='☹ **Failed to download the song, try again or use my search command.**')
-                return await temp.edit(embed=embed)
+
+            await self.play_song(ctx, song)
+            await temp.edit(embed=emb)
 
         global music
         music = song
