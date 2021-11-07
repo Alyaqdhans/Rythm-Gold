@@ -127,14 +127,8 @@ class Player(commands.Cog):
                 source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
                 ctx.voice_client.play(source ,after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
             except:
-                global loop
-                if ctx.voice_client is not None:
-                    await ctx.voice_client.disconnect()
-                if len(self.song_queue[ctx.guild.id]) > 0:
-                    self.song_queue[ctx.guild.id] = []
-                loop = False
                 embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play a song.**')
-                return await ctx.send(embed=embed)
+                await ctx.send(embed=embed)
 
             global musics
             musics = song
