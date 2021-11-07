@@ -130,6 +130,8 @@ class Player(commands.Cog):
                 global loop
                 if ctx.voice_client is not None:
                     await ctx.voice_client.disconnect()
+                if len(self.song_queue[ctx.guild.id]) > 0:
+                    self.song_queue[ctx.guild.id] = []
                 loop = False
                 embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play a song.**')
                 return await ctx.send(embed=embed)
