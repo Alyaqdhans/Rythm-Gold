@@ -132,6 +132,22 @@ class Player(commands.Cog):
 
             global musics
             musics = song
+
+    async def time_format(self, sec):
+            total_seconds = sec
+            hours = (total_seconds - ( total_seconds % 3600))/3600
+            seconds_minus_hours = (total_seconds - hours*3600)
+            minutes = (seconds_minus_hours - (seconds_minus_hours % 60) )/60
+            seconds = seconds_minus_hours - minutes*60
+            if total_seconds < 3600:
+                return '{}:{:02d}'.format(int(minutes), int(seconds))
+            else:
+                return '{}:{:02d}:{:02d}'.format(int(hours), int(minutes), int(seconds))
+            
+            #if vduration < 3600:
+                #dur = strftime("%M:%S", gmtime(vduration))
+            #else:
+                #dur = strftime("%H:%M:%S", gmtime(vduration))
   
     @commands.command()
     async def ping(self, ctx):
@@ -213,7 +229,7 @@ class Player(commands.Cog):
                 info_dict = ydl.extract_info(song, download=False)
                 vtitle = info_dict.get('title', None)
                 vthumbnail = info_dict.get('thumbnail', None)
-                vauthor = info_dict.get('uploader', None)
+                #vauthor = info_dict.get('uploader', None)
                 vduration = info_dict.get('duration', None)
             except:
                 embed = discord.Embed(colour=colour, description='☹ **Failed to download the song, try again or use my search command.**')
@@ -224,17 +240,10 @@ class Player(commands.Cog):
                 #return await ctx.send(f"I am currently playing a song, this song has been added to the queue at position {queue_len+1}.")
                 embs = discord.Embed(colour=colour, title='Added to the queue', description=f"[{vtitle}]({song})")
                 embs.set_thumbnail(url=vthumbnail)
-                embs.add_field(name="Author", value=f"`{vauthor}`")
+                #embs.add_field(name="Author", value=f"`{vauthor}`")
+                embs.add_field(name="Requested by", value=ctx.author.mention)
 
-                total_seconds = vduration
-                hours = (total_seconds - ( total_seconds % 3600))/3600
-                seconds_minus_hours = (total_seconds - hours*3600)
-                minutes = (seconds_minus_hours - (seconds_minus_hours % 60) )/60
-                seconds = seconds_minus_hours - minutes*60
-                if total_seconds < 3600:
-                    durs = '{}:{:02d}'.format(int(minutes), int(seconds))
-                else:
-                    durs = '{}:{:02d}:{:02d}'.format(int(hours), int(minutes), int(seconds))
+                durs = await self.time_format(vduration)
 
                 embs.add_field(name="Duration", value=f"`{durs}`")
                 embs.set_footer(text=f"{queue_len} song(s) in the queue.")
@@ -244,22 +253,10 @@ class Player(commands.Cog):
             emb = discord.Embed(colour=colour, title='Now Playing',
             description=f"[{vtitle}]({song})")
             emb.set_thumbnail(url=vthumbnail)
-            emb.add_field(name="Author", value=f"`{vauthor}`")
+            #emb.add_field(name="Author", value=f"`{vauthor}`")
+            emb.add_field(name="Requested by", value=ctx.author.mention)
             
-            total_seconds = vduration
-            hours = (total_seconds - ( total_seconds % 3600))/3600
-            seconds_minus_hours = (total_seconds - hours*3600)
-            minutes = (seconds_minus_hours - (seconds_minus_hours % 60) )/60
-            seconds = seconds_minus_hours - minutes*60
-            if total_seconds < 3600:
-                dur = '{}:{:02d}'.format(int(minutes), int(seconds))
-            else:
-                dur = '{}:{:02d}:{:02d}'.format(int(hours), int(minutes), int(seconds))
-            
-            #if vduration < 3600:
-                #dur = strftime("%M:%S", gmtime(vduration))
-            #else:
-                #dur = strftime("%H:%M:%S", gmtime(vduration))
+            dur = await self.time_format(vduration)
 
             emb.add_field(name="Duration", value=f"`{dur}`")
             try:
@@ -304,15 +301,7 @@ class Player(commands.Cog):
             emb.set_thumbnail(url=vthumbnail)
             emb.add_field(name="Author", value=f"`{vauthor}`")
 
-            total_seconds = vduration
-            hours = (total_seconds - ( total_seconds % 3600))/3600
-            seconds_minus_hours = (total_seconds - hours*3600)
-            minutes = (seconds_minus_hours - (seconds_minus_hours % 60) )/60
-            seconds = seconds_minus_hours - minutes*60
-            if total_seconds < 3600:
-                dur2 = '{}:{:02d}'.format(int(minutes), int(seconds))
-            else:
-                dur2 = '{}:{:02d}:{:02d}'.format(int(hours), int(minutes), int(seconds))
+            dur2 = await self.time_format(vduration)
 
             emb.add_field(name="Duration", value=f"`{dur2}`")
             emb.set_footer(text=f"{queue_len} song(s) in the queue.")
@@ -412,15 +401,7 @@ class Player(commands.Cog):
             i += 1
 
         #embed.set_footer(text="Thanks for using me!")
-        total_seconds = qd
-        hours = (total_seconds - ( total_seconds % 3600))/3600
-        seconds_minus_hours = (total_seconds - hours*3600)
-        minutes = (seconds_minus_hours - (seconds_minus_hours % 60) )/60
-        seconds = seconds_minus_hours - minutes*60
-        if total_seconds < 3600:
-            dur = '{}:{:02d}'.format(int(minutes), int(seconds))
-        else:
-            dur = '{}:{:02d}:{:02d}'.format(int(hours), int(minutes), int(seconds))
+        dur = await self.time_format(qd)
         
         embed.add_field(name="Queue Duration", value=f"`{dur}`")
         await temp.edit(embed=embed)
