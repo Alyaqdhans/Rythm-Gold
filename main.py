@@ -127,11 +127,11 @@ class Player(commands.Cog):
                 source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
                 ctx.voice_client.play(source ,after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
             except:
-                info = ydl.extract_info(url, download=False)
-                url2 = info['formats'][0]['url']
-                info_dict = ydl.extract_info(song, download=False)
-                title = info_dict.get('title', None)
-                embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play `{title}`.**')
+                global loop
+                if ctx.voice_client is not None:
+                    await ctx.voice_client.disconnect()
+                loop = False
+                embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play a song.**')
                 return await ctx.send(embed=embed)
 
             global musics
@@ -384,7 +384,7 @@ class Player(commands.Cog):
 
     @commands.command(aliases=["q"])
     async def queue(self, ctx): # display the current guilds queue
-        if ctx.voice_client is None or ctx.voice_client.source is None:
+        if ctx.voice_client is None:
             #return await ctx.send("I am not playing any song.")
             embed = discord.Embed(colour=colour, description='⛔ **I am not playing any song.**')
             return await ctx.send(embed=embed)
