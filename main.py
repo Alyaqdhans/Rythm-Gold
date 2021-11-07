@@ -3,6 +3,8 @@ import pafy
 import discord
 from discord.ext import commands
 from youtube_dl import YoutubeDL
+#import os
+#import keep_alive
 #from time import strftime
 #from time import gmtime
 
@@ -117,15 +119,16 @@ class Player(commands.Cog):
 
     async def play_song(self, ctx, song):
         #ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(url)),after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
+        #url = pafy.new(song).getbestaudio().url
         with YoutubeDL(YDL_OPTIONS) as ydl:
             try:
-                url = pafy.new(song).getbestaudio().url
-                info = ydl.extract_info(url, download=False)
+                info = ydl.extract_info(song, download=False)
                 url2 = info['formats'][0]['url']
                 source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
                 ctx.voice_client.play(source ,after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
             except:
-                embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play a song.**')
+                self.song_queue[ctx.guild.id].append(song)
+                embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong, the song has been re added to the queue.**')
                 await ctx.send(embed=embed)
 
             global musics
@@ -258,8 +261,8 @@ class Player(commands.Cog):
 
             emb.add_field(name="Duration", value=f"`{dur}`")
             try:
-                url = pafy.new(song).getbestaudio().url
-                info = ydl.extract_info(url, download=False)
+                #url = pafy.new(song).getbestaudio().url
+                info = ydl.extract_info(song, download=False)
                 url2 = info['formats'][0]['url']
                 source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
                 ctx.voice_client.play(source ,after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
@@ -629,5 +632,6 @@ async def setup():
     await bot.wait_until_ready()
     bot.add_cog(Player(bot))
 
+#keep_alive.keep_alive()
 bot.loop.create_task(setup())
 bot.run("ODk4NTU4NzcxOTQzNjA0MjQ0.YWl-EQ.w34gsVHC65T3gaMKvtVrwS1T6_A")
