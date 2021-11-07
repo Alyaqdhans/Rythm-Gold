@@ -127,9 +127,10 @@ class Player(commands.Cog):
                 source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
                 ctx.voice_client.play(source ,after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
             except:
-                if len(self.song_queue[ctx.guild.id]) > 0:
-                    self.song_queue[ctx.guild.id].append(song)
-                embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong, the song has been re added to the queue.**')
+                self.song_queue[ctx.guild.id].append(song)
+                if not len(self.song_queue[ctx.guild.id]) > 0:
+                    self.check_queue(ctx)
+                embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play `[song]({song})`, it has been re added to the queue.**')
                 await ctx.send(embed=embed)
 
             global musics
