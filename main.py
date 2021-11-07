@@ -1,5 +1,5 @@
 import asyncio
-#import pafy
+import pafy
 import discord
 from discord.ext import commands
 from youtube_dl import YoutubeDL
@@ -118,23 +118,23 @@ class Player(commands.Cog):
             await ctx.send(embed=embed)
 
     async def play_song(self, ctx, song):
-        #ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(url)),after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
-        #url = pafy.new(song).getbestaudio().url
-        with YoutubeDL(YDL_OPTIONS) as ydl:
-            try:
-                info = ydl.extract_info(song, download=False)
-                url2 = info['formats'][0]['url']
-                source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
-                ctx.voice_client.play(source ,after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
-            except:
-                self.song_queue[ctx.guild.id].append(song)
-                if not len(self.song_queue[ctx.guild.id]) > 0:
-                    self.check_queue(ctx)
-                embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play `[song]({song})`, it has been re added to the queue.**')
-                await ctx.send(embed=embed)
+        #with YoutubeDL(YDL_OPTIONS) as ydl:
+            #info = ydl.extract_info(song, download=False)
+            #url2 = info['formats'][0]['url']
+            #source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
+            #ctx.voice_client.play(source, after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
+        try:
+            url = pafy.new(song).getbestaudio().url
+            ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(url)), after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
+        except:
+            self.song_queue[ctx.guild.id].append(song)
+            if not len(self.song_queue[ctx.guild.id]) > 0:
+                self.check_queue(ctx)
+            embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play `[song]({song})`, it has been re added to the queue.**')
+            await ctx.send(embed=embed)
 
-            global musics
-            musics = song
+        global musics
+        musics = song
 
     async def time_format(self, sec):
             total_seconds = sec
@@ -263,12 +263,7 @@ class Player(commands.Cog):
 
             emb.add_field(name="Duration", value=f"`{dur}`")
             try:
-                #url = pafy.new(song).getbestaudio().url
-                info = ydl.extract_info(song, download=False)
-                url2 = info['formats'][0]['url']
-                source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
-                ctx.voice_client.play(source ,after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
-                #await self.play_song(ctx, song)
+                await self.play_song(ctx, song)
                 await temp.edit(embed=emb)
             except:
                 embed = discord.Embed(colour=colour, description='☹ **Failed to download the song, try again or use my search command.**')
