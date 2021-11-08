@@ -395,7 +395,7 @@ class Player(commands.Cog):
             embed.add_field(name="Queue Duration", value=f"`{dur}`")
             await temp.edit(embed=embed)
         except:
-            embed = discord.Embed(colour=colour, description='☹ **Failed to fetch the queue, try again or the queue might be too long.**')
+            embed = discord.Embed(colour=colour, description='☹ **Failed to fetch the queue, try again.**')
             return await temp.edit(embed=embed)
 
     @commands.command()
