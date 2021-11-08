@@ -419,7 +419,7 @@ class Player(commands.Cog):
                     embed.description += f"{i}) [{title}]({url})\n"
                     i += 1
         except:
-            embed = discord.Embed(colour=colour, description='☹ **Failed to fetch the queue, try again.**')
+            embed = discord.Embed(colour=colour, description='☹ **Failed to fetch the queue, try again or the queue might be too long.**')
             return await temp.edit(embed=embed)
 
         #embed.set_footer(text="Thanks for using me!")
