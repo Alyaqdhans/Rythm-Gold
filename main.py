@@ -278,6 +278,7 @@ class Player(commands.Cog):
                 with YoutubeDL(YDL_OPTIONS) as ydl:
                     info = ydl.extract_info(song, download=False)
                     pname = info['entries'][0]['playlist']
+                    thumb = info['entries'][0]['thumbnail']
                     total_dur = 0
                     num = 0
                     for i, item in enumerate(info['entries']):
@@ -288,9 +289,10 @@ class Player(commands.Cog):
                             self.song_queue[ctx.guild.id].append(url)
                         else:
                             await self.play_song(ctx, url)
-                        asyncio.sleep(0.1)
+                        del(url)
 
                     embs = discord.Embed(colour=colour, title='Playlist added to the queue', description=f"[{pname}]({song})")
+                    embs.set_thumbnail(url=thumb)
                     embs.add_field(name="Enqueued", value=f"`{num}` songs")
                     dur = await self.time_format(total_dur)
                     embs.add_field(name="Playlist duration", value=f"`{dur}`")
