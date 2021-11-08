@@ -288,10 +288,9 @@ class Player(commands.Cog):
                             self.song_queue[ctx.guild.id].append(url)
                         else:
                             await self.play_song(ctx, url)
-                        asyncio.sleep(0.01)
-                        #if num > 100:
-                            #embed = discord.Embed(colour=colour, description='❌ **Cannot download playlists with more than 100 songs.**')
-                            #return await temp.edit(embed=embed)
+                        if num > 80:
+                            embed = discord.Embed(colour=colour, description='❌ **Cannot download playlists with more than 80 songs.**')
+                            return await temp.edit(embed=embed)
 
                     embs = discord.Embed(colour=colour, title='Playlist added to the queue', description=f"[{pname}]({song})")
                     embs.add_field(name="Enqueued", value=f"`{num}` songs")
