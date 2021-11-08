@@ -217,14 +217,14 @@ class Player(commands.Cog):
             try:
                 result = await self.search_song(1, song, get_url=True)
                 song = result[0]
-                embed = discord.Embed(colour=colour, description='⏱ **Downloading the song, please wait.**')
+                embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
                 temps = await temp.edit(embed=embed)
             except:
                 #return await ctx.send("Sorry, I could not find the given song, try using my search command.")
                 embed = discord.Embed(colour=colour, description='☹ **Sorry, I could not find the given song, try again or use my search command.**')
                 return await temps.edit(embed=embed)
         else:
-            embed = discord.Embed(colour=colour, description='⏱ **Downloading the song, please wait.**')
+            embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
             temp = await ctx.send(embed=embed)
 
         if not "youtube.com/playlist?" in song:
