@@ -125,7 +125,7 @@ class Player(commands.Cog):
             #ctx.voice_client.play(source, after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
         try:
             url = pafy.new(song).getbestaudio().url
-            ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(url)), after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
+            ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS)), after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
         except:
             self.song_queue[ctx.guild.id].append(song)
             if not len(self.song_queue[ctx.guild.id]) > 0:
