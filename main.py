@@ -130,7 +130,7 @@ class Player(commands.Cog):
             self.song_queue[ctx.guild.id].append(song)
             if not len(self.song_queue[ctx.guild.id]) > 0:
                 self.check_queue(ctx)
-            embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play `[song]({song})`, it has been re added to the queue.**')
+            embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play [song]({song}), it has been re added to the queue.**')
             await ctx.send(embed=embed)
 
         global musics
@@ -277,12 +277,15 @@ class Player(commands.Cog):
                 for i in info['entries']:
                     num += 1
                     url = i['formats'][0]['url']
-                    self.song_queue[ctx.guild.id].append(url)
+                    if ctx.voice_client.source is not None:
+                        self.song_queue[ctx.guild.id].append(url)
+                    else:
+                        await self.play_song(ctx, url)
 
-                embs = discord.Embed(colour=colour, title='Playlist added to the queue', description=f"Enqueued {num} songs")
+                embs = discord.Embed(colour=colour, title='Playlist added to the queue')
+                embs.add_field(name="Enqueued", value=f"`{num}` songs")
                 embs.add_field(name="Requested by", value=ctx.author.mention)
                 
-            await self.check_queue(ctx)
             await temp.edit(embed=embs)
 
     @commands.command(aliases=["np"])
