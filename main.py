@@ -418,14 +418,13 @@ class Player(commands.Cog):
                     qd += duration
                     embed.description += f"{i}) [{title}]({url})\n"
                     i += 1
+            #embed.set_footer(text="Thanks for using me!")
+            dur = await self.time_format(qd)
+            embed.add_field(name="Queue Duration", value=f"`{dur}`")
+            await temp.edit(embed=embed)
         except:
             embed = discord.Embed(colour=colour, description='☹ **Failed to fetch the queue, try again or the queue might be too long.**')
             return await temp.edit(embed=embed)
-
-        #embed.set_footer(text="Thanks for using me!")
-        dur = await self.time_format(qd)
-        embed.add_field(name="Queue Duration", value=f"`{dur}`")
-        await temp.edit(embed=embed)
 
     @commands.command()
     async def skip(self, ctx):
