@@ -225,7 +225,7 @@ class Player(commands.Cog):
             song = result[0]
             embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
             await temp.edit(embed=embed)
-            
+
         else:
             embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
             temp = await ctx.send(embed=embed)
@@ -409,19 +409,18 @@ class Player(commands.Cog):
         embed = discord.Embed(title="Queue List", description="", colour=colour)
         i = 1
         qd = 0
-        for url in self.song_queue[ctx.guild.id]:
-            with YoutubeDL(YDL_OPTIONS) as ydl:
-                try:
+        try:
+            for url in self.song_queue[ctx.guild.id]:
+                with YoutubeDL(YDL_OPTIONS) as ydl:
                     info_dict = ydl.extract_info(url, download=False)
                     title = info_dict.get('title', None)
                     duration = info_dict.get('duration', None)
                     qd += duration
                     embed.description += f"{i}) [{title}]({url})\n"
-                except:
-                    embed = discord.Embed(colour=colour, description='☹ **Failed to fetch the queue, try again.**')
-                    return await temp.edit(embed=embed)
-
-            i += 1
+                    i += 1
+        except:
+            embed = discord.Embed(colour=colour, description='☹ **Failed to fetch the queue, try again.**')
+            return await temp.edit(embed=embed)
 
         #embed.set_footer(text="Thanks for using me!")
         dur = await self.time_format(qd)
