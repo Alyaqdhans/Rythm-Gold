@@ -595,7 +595,7 @@ class Player(commands.Cog):
 
     @commands.command()
     async def pause(self, ctx):
-        if ctx.voice_client is None or ctx.voice_client.source is None:
+        if ctx.voice_client is None:
             #return await ctx.send("I am not playing any song.")
             embed = discord.Embed(colour=colour, description='⛔ **I am not playing any song.**')
             return await ctx.send(embed=embed)
@@ -622,7 +622,7 @@ class Player(commands.Cog):
 
     @commands.command()
     async def resume(self, ctx):
-        if ctx.voice_client is None or ctx.voice_client.source is None:
+        if ctx.voice_client is None:
             #return await ctx.send("I am not playing any song.")
             embed = discord.Embed(colour=colour, description='⛔ **I am not playing any song.**')
             return await ctx.send(embed=embed)
