@@ -276,7 +276,7 @@ class Player(commands.Cog):
                 pname = info['entries'][0]['playlist']
                 total_dur = 0
                 num = 0
-                for i in enumerate(info['entries']):
+                for i, item in enumerate(info['entries']):
                     num += 1
                     url = info['entries'][i]['webpage_url']
                     total_dur += info['entries'][i]['duration']
