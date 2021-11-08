@@ -214,15 +214,19 @@ class Player(commands.Cog):
             embed = discord.Embed(colour=colour, description='⏱ **Searching for song, this may take a few seconds.**')
             embed.set_footer(text="Using the song link is faster than using its name.")
             temp = await ctx.send(embed=embed)
-            try:
-                result = await self.search_song(1, song, get_url=True)
-                song = result[0]
-                embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
-                temps = await temp.edit(embed=embed)
-            except:
+
+            result = await self.search_song(1, song, get_url=True)
+            song = result[0]
+            embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
+            temps = await temp.edit(embed=embed)
+            
+            if result is None:
                 #return await ctx.send("Sorry, I could not find the given song, try using my search command.")
                 embed = discord.Embed(colour=colour, description='☹ **Sorry, I could not find the given song, try again or use my search command.**')
                 return await temps.edit(embed=embed)
+        else:
+            embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
+            temp = await ctx.send(embed=embed)
         else:
             embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
             temp = await ctx.send(embed=embed)
