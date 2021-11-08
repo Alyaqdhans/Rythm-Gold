@@ -227,9 +227,6 @@ class Player(commands.Cog):
         else:
             embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
             temp = await ctx.send(embed=embed)
-        else:
-            embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
-            temp = await ctx.send(embed=embed)
 
         if not "youtube.com/playlist?" in song:
             with YoutubeDL(YDL_OPTIONS) as ydl:
