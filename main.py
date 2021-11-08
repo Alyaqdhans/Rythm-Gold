@@ -197,9 +197,9 @@ class Player(commands.Cog):
             embed = discord.Embed(colour=colour, description='❌ **You must include a song to play.**')
             return await ctx.send(embed=embed)
 
-        if "youtube.com/playlist?" in song:
-            embed = discord.Embed(colour=colour, description='❌ **Cannot play playlists.**')
-            return await ctx.send(embed=embed)
+        #if "youtube.com/playlist?" in song:
+            #embed = discord.Embed(colour=colour, description='❌ **Cannot play playlists.**')
+            #return await ctx.send(embed=embed)
 
         if ctx.voice_client is None:
             await ctx.author.voice.channel.connect()
@@ -209,7 +209,7 @@ class Player(commands.Cog):
             return await ctx.send(embed=embed)
 
         # handle song where song isn't url
-        if not ("youtube.com/watch?" in song or "https://youtu.be/" in song):
+        if not ("youtube.com/watch?" in song or "https://youtu.be/" in song or "youtube.com/playlist?" in song):
             #await ctx.send("Searching for song, this may take a few seconds.")
             embed = discord.Embed(colour=colour, description='⏱ **Searching for song, this may take a few seconds.**')
             embed.set_footer(text="Using the song link is faster than using its name.")
@@ -227,49 +227,73 @@ class Player(commands.Cog):
             embed = discord.Embed(colour=colour, description='⏱ **Downloading the song, please wait.**')
             temp = await ctx.send(embed=embed)
 
-        with YoutubeDL(YDL_OPTIONS) as ydl:
-            try:
-                info_dict = ydl.extract_info(song, download=False)
-                vtitle = info_dict.get('title', None)
-                vthumbnail = info_dict.get('thumbnail', None)
-                #vauthor = info_dict.get('uploader', None)
-                vduration = info_dict.get('duration', None)
-            except:
-                embed = discord.Embed(colour=colour, description='☹ **Failed to download the song, try again or use my search command.**')
-                return await temp.edit(embed=embed)
-            if ctx.voice_client.source is not None:
-                queue_len = len(self.song_queue[ctx.guild.id])
-                self.song_queue[ctx.guild.id].append(song)
-                #return await ctx.send(f"I am currently playing a song, this song has been added to the queue at position {queue_len+1}.")
-                embs = discord.Embed(colour=colour, title='Added to the queue', description=f"[{vtitle}]({song})")
-                embs.set_thumbnail(url=vthumbnail)
-                #embs.add_field(name="Author", value=f"`{vauthor}`")
-                embs.add_field(name="Requested by", value=ctx.author.mention)
+        if not "youtube.com/playlist?" in song:
+            with YoutubeDL(YDL_OPTIONS) as ydl:
+                try:
+                    info_dict = ydl.extract_info(song, download=False)
+                    vtitle = info_dict.get('title', None)
+                    vthumbnail = info_dict.get('thumbnail', None)
+                    #vauthor = info_dict.get('uploader', None)
+                    vduration = info_dict.get('duration', None)
+                except:
+                    embed = discord.Embed(colour=colour, description='☹ **Failed to download the song, try again or use my search command.**')
+                    return await temp.edit(embed=embed)
+                if ctx.voice_client.source is not None:
+                    queue_len = len(self.song_queue[ctx.guild.id])
+                    self.song_queue[ctx.guild.id].append(song)
+                    #return await ctx.send(f"I am currently playing a song, this song has been added to the queue at position {queue_len+1}.")
+                    embs = discord.Embed(colour=colour, title='Added to the queue', description=f"[{vtitle}]({song})")
+                    embs.set_thumbnail(url=vthumbnail)
+                    #embs.add_field(name="Author", value=f"`{vauthor}`")
+                    embs.add_field(name="Requested by", value=ctx.author.mention)
 
-                durs = await self.time_format(vduration)
-
-                embs.add_field(name="Duration", value=f"`{durs}`")
-                embs.set_footer(text=f"{queue_len} song(s) in the queue.")
-                return await temp.edit(embed=embs)
-        
-            #await ctx.send(f"Now playing **{entry['title']}**")
-            emb = discord.Embed(colour=colour, title='Now Playing',
-            description=f"[{vtitle}]({song})")
-            emb.set_thumbnail(url=vthumbnail)
-            #emb.add_field(name="Author", value=f"`{vauthor}`")
-            emb.add_field(name="Requested by", value=ctx.author.mention)
+                    durs = await self.time_format(vduration)
+                    embs.add_field(name="Duration", value=f"`{durs}`")
+                    embs.set_footer(text=f"{queue_len} song(s) in the queue.")
+                    return await temp.edit(embed=embs)
             
-            dur = await self.time_format(vduration)
-
-            emb.add_field(name="Duration", value=f"`{dur}`")
+                #await ctx.send(f"Now playing **{entry['title']}**")
+                emb = discord.Embed(colour=colour, title='Now Playing',
+                description=f"[{vtitle}]({song})")
+                emb.set_thumbnail(url=vthumbnail)
+                #emb.add_field(name="Author", value=f"`{vauthor}`")
+                emb.add_field(name="Requested by", value=ctx.author.mention)
+                
+                dur = await self.time_format(vduration)
+                emb.add_field(name="Duration", value=f"`{dur}`")
 
             await self.play_song(ctx, song)
             await temp.edit(embed=emb)
 
-        global music
-        music = song
-        global musics
-        musics = song
+            global music
+            music = song
+            global musics
+            musics = song
+
+        else:
+            with YoutubeDL(YDL_OPTIONS) as ydl:
+                info = ydl.extract_info(song, download=False)
+                num = 0
+                total_dur = 0
+                for i in info['entries']:
+                    num += 1
+                    url = i['formats'][0]['url']
+                    info_dict = ydl.extract_info(url, download=False)
+                    duration = info_dict.get('duration', None)
+                    total_dur += duration
+                    self.song_queue[ctx.guild.id].append(url)
+
+                embs = discord.Embed(colour=colour, title='Playlist added to the queue', description=f"Enqueued {num} songs")
+                embs.add_field(name="Requested by", value=ctx.author.mention)
+
+                durs = await self.time_format(total_dur)
+                embs.add_field(name="Playlist duration", value=f"`{durs}`")
+
+                queue_len = len(self.song_queue[ctx.guild.id])
+                embs.set_footer(text=f"{queue_len} song(s) in the queue.")
+                
+            await self.check_queue(ctx)
+            await temp.edit(embed=embs)
 
     @commands.command(aliases=["np"])
     async def nowplaying(self, ctx):
@@ -297,7 +321,6 @@ class Player(commands.Cog):
             emb.add_field(name="Author", value=f"`{vauthor}`")
 
             dur2 = await self.time_format(vduration)
-
             emb.add_field(name="Duration", value=f"`{dur2}`")
             emb.set_footer(text=f"{queue_len} song(s) in the queue.")
             await temp.edit(embed=emb)
@@ -386,8 +409,8 @@ class Player(commands.Cog):
                 try:
                     info_dict = ydl.extract_info(url, download=False)
                     title = info_dict.get('title', None)
-                    duartion = info_dict.get('duration', None)
-                    qd += duartion
+                    duration = info_dict.get('duration', None)
+                    qd += duration
                     embed.description += f"{i}) [{title}]({url})\n"
                 except:
                     embed = discord.Embed(colour=colour, description='☹ **Failed to fetch the queue, try again.**')
@@ -397,7 +420,6 @@ class Player(commands.Cog):
 
         #embed.set_footer(text="Thanks for using me!")
         dur = await self.time_format(qd)
-        
         embed.add_field(name="Queue Duration", value=f"`{dur}`")
         await temp.edit(embed=embed)
 
