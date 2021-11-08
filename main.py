@@ -274,23 +274,13 @@ class Player(commands.Cog):
             with YoutubeDL(YDL_OPTIONS) as ydl:
                 info = ydl.extract_info(song, download=False)
                 num = 0
-                total_dur = 0
                 for i in info['entries']:
                     num += 1
                     url = i['formats'][0]['url']
-                    info_dict = ydl.extract_info(url, download=False)
-                    duration = info_dict.get('duration', None)
-                    total_dur += duration
                     self.song_queue[ctx.guild.id].append(url)
 
                 embs = discord.Embed(colour=colour, title='Playlist added to the queue', description=f"Enqueued {num} songs")
                 embs.add_field(name="Requested by", value=ctx.author.mention)
-
-                durs = await self.time_format(total_dur)
-                embs.add_field(name="Playlist duration", value=f"`{durs}`")
-
-                queue_len = len(self.song_queue[ctx.guild.id])
-                embs.set_footer(text=f"{queue_len} song(s) in the queue.")
                 
             await self.check_queue(ctx)
             await temp.edit(embed=embs)
