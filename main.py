@@ -273,17 +273,22 @@ class Player(commands.Cog):
         else:
             with YoutubeDL(YDL_OPTIONS) as ydl:
                 info = ydl.extract_info(song, download=False)
+                pname = info['entries'][0]['playlist']
+                total_dur = 0
                 num = 0
-                for i in info['entries']:
+                for i, item in enumerate(info['entries']):
                     num += 1
-                    url = i['formats'][0]['url']
+                    url = info['entries'][i]['webpage_url']
+                    total_dur += info['entries'][i]['duration']
                     if ctx.voice_client.source is not None:
                         self.song_queue[ctx.guild.id].append(url)
                     else:
                         await self.play_song(ctx, url)
 
-                embs = discord.Embed(colour=colour, title='Playlist added to the queue')
+                embs = discord.Embed(colour=colour, title='Playlist added to the queue', description=f"[{pname}]({song})")
                 embs.add_field(name="Enqueued", value=f"`{num}` songs")
+                dur = await self.time_format(total_dur)
+                embs.add_field(name="Playlist duration", value=f"`{dur}`")
                 embs.add_field(name="Requested by", value=ctx.author.mention)
                 
             await temp.edit(embed=embs)
