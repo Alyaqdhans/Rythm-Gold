@@ -223,11 +223,11 @@ class Player(commands.Cog):
                 return await temp.edit(embed=embed)
 
             song = result[0]
-            embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
+            embed = discord.Embed(colour=colour, description='⏱ **Downloading the song, please wait.**')
             await temp.edit(embed=embed)
 
         else:
-            embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
+            embed = discord.Embed(colour=colour, description='⏱ **Downloading the song, please wait.**')
             temp = await ctx.send(embed=embed)
 
         with YoutubeDL(YDL_OPTIONS) as ydl:
