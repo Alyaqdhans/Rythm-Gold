@@ -216,14 +216,16 @@ class Player(commands.Cog):
             temp = await ctx.send(embed=embed)
 
             result = await self.search_song(1, song, get_url=True)
-            song = result[0]
-            embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
-            temps = await temp.edit(embed=embed)
             
             if result is None:
                 #return await ctx.send("Sorry, I could not find the given song, try using my search command.")
                 embed = discord.Embed(colour=colour, description='☹ **Sorry, I could not find the given song, try again or use my search command.**')
-                return await temps.edit(embed=embed)
+                return await temp.edit(embed=embed)
+
+            song = result[0]
+            embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
+            await temp.edit(embed=embed)
+            
         else:
             embed = discord.Embed(colour=colour, description='⏱ **Downloading the song(s), please wait.**')
             temp = await ctx.send(embed=embed)
