@@ -281,6 +281,7 @@ class Player(commands.Cog):
                     thumb = info['entries'][0]['thumbnail']
                     total_dur = 0
                     num = 0
+                    print(len(info['entries']))
                     for i, item in enumerate(info['entries']):
                         num += 1
                         url = info['entries'][i]['webpage_url']
@@ -289,7 +290,6 @@ class Player(commands.Cog):
                             self.song_queue[ctx.guild.id].append(url)
                         else:
                             await self.play_song(ctx, url)
-                        del(url)
 
                     embs = discord.Embed(colour=colour, title='Playlist added to the queue', description=f"[{pname}]({song})")
                     embs.set_thumbnail(url=thumb)
