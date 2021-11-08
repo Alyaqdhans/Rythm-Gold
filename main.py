@@ -288,8 +288,8 @@ class Player(commands.Cog):
                             self.song_queue[ctx.guild.id].append(url)
                         else:
                             await self.play_song(ctx, url)
-                        if num > 80:
-                            embed = discord.Embed(colour=colour, description='❌ **Cannot download playlists with more than 80 songs.**')
+                        if num > 70:
+                            embed = discord.Embed(colour=colour, description='❌ **Cannot download playlists with more than 70 songs.**')
                             return await temp.edit(embed=embed)
 
                     embs = discord.Embed(colour=colour, title='Playlist added to the queue', description=f"[{pname}]({song})")
