@@ -281,11 +281,10 @@ class Player(commands.Cog):
                     thumb = info['entries'][0]['thumbnail']
                     total_dur = 0
                     num = 0
-                    print(len(info['entries']))
-                    for i, item in enumerate(info['entries']):
+                    for i in info['entries']:
                         num += 1
-                        url = info['entries'][i]['webpage_url']
-                        total_dur += info['entries'][i]['duration']
+                        url = i['formats'][0]['url'] 
+                        total_dur += i['formats'][0]['duration'] 
                         if ctx.voice_client.source is not None:
                             self.song_queue[ctx.guild.id].append(url)
                         else:
