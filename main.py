@@ -3,7 +3,6 @@ import pafy
 import discord
 from discord.ext import commands
 from youtube_dl import YoutubeDL
-import time
 #import os
 #import keep_alive
 #from time import strftime
@@ -276,10 +275,6 @@ class Player(commands.Cog):
 
         await self.play_song(ctx, song2)
         await temp.edit(embed=emb)
-
-        while ctx.voice_client.source is None:
-            time.sleep(1)
-
         p = False
 
         global music
