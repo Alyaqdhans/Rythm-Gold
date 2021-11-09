@@ -274,8 +274,12 @@ class Player(commands.Cog):
             emb.add_field(name="Duration", value=f"`{dur}`")
 
         await self.play_song(ctx, song2)
-        p = False
         await temp.edit(embed=emb)
+
+        while ctx.voice_client.source is None:
+            asyncio.sleep(1)
+
+        p = False
 
         global music
         music = song2
