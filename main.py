@@ -215,22 +215,22 @@ class Player(commands.Cog):
             return await ctx.send(embed=embed)
 
         p = True
-        song = song
+        song2 = song
         # handle song where song isn't url
-        if not ("youtube.com/watch?" in song or "https://youtu.be/" in song):
+        if not ("youtube.com/watch?" in song2 or "https://youtu.be/" in song2):
             #await ctx.send("Searching for song, this may take a few seconds.")
             embed = discord.Embed(colour=colour, description='⏱ **Searching for song, this may take a few seconds.**')
             embed.set_footer(text="Using the song link is faster than using its name.")
             temp = await ctx.send(embed=embed)
 
-            result = await self.search_song(1, song, get_url=True)
+            result = await self.search_song(1, song2, get_url=True)
             
             if result is None:
                 #return await ctx.send("Sorry, I could not find the given song, try using my search command.")
                 embed = discord.Embed(colour=colour, description='☹ **Sorry, I could not find the given song, try again or use my search command.**')
                 return await temp.edit(embed=embed)
 
-            song = result[0]
+            song2 = result[0]
             embed = discord.Embed(colour=colour, description='⏱ **Downloading the song, please wait.**')
             await temp.edit(embed=embed)
 
@@ -240,7 +240,7 @@ class Player(commands.Cog):
 
         with YoutubeDL(YDL_OPTIONS) as ydl:
             try:
-                info_dict = ydl.extract_info(song, download=False)
+                info_dict = ydl.extract_info(song2, download=False)
                 vtitle = info_dict.get('title', None)
                 vthumbnail = info_dict.get('thumbnail', None)
                 #vauthor = info_dict.get('uploader', None)
@@ -250,9 +250,9 @@ class Player(commands.Cog):
                 return await temp.edit(embed=embed)
             if ctx.voice_client.source is not None:
                 queue_len = len(self.song_queue[ctx.guild.id])
-                self.song_queue[ctx.guild.id].append(song)
+                self.song_queue[ctx.guild.id].append(song2)
                 #return await ctx.send(f"I am currently playing a song, this song has been added to the queue at position {queue_len+1}.")
-                embs = discord.Embed(colour=colour, title='Added to the queue', description=f"[{vtitle}]({song})")
+                embs = discord.Embed(colour=colour, title='Added to the queue', description=f"[{vtitle}]({song2})")
                 embs.set_thumbnail(url=vthumbnail)
                 #embs.add_field(name="Author", value=f"`{vauthor}`")
                 embs.add_field(name="Requested by", value=ctx.author.mention)
@@ -265,7 +265,7 @@ class Player(commands.Cog):
         
             #await ctx.send(f"Now playing **{entry['title']}**")
             emb = discord.Embed(colour=colour, title='Now Playing',
-            description=f"[{vtitle}]({song})")
+            description=f"[{vtitle}]({song2})")
             emb.set_thumbnail(url=vthumbnail)
             #emb.add_field(name="Author", value=f"`{vauthor}`")
             emb.add_field(name="Requested by", value=ctx.author.mention)
@@ -273,14 +273,14 @@ class Player(commands.Cog):
             dur = await self.time_format(vduration)
             emb.add_field(name="Duration", value=f"`{dur}`")
 
-        await self.play_song(ctx, song)
+        await self.play_song(ctx, song2)
         p = False
         await temp.edit(embed=emb)
 
         global music
-        music = song
+        music = song2
         global musics
-        musics = song
+        musics = song2
 
     @commands.command(aliases=["np"])
     async def nowplaying(self, ctx):
