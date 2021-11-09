@@ -215,6 +215,7 @@ class Player(commands.Cog):
             return await ctx.send(embed=embed)
 
         p = True
+        song = song
         # handle song where song isn't url
         if not ("youtube.com/watch?" in song or "https://youtu.be/" in song):
             #await ctx.send("Searching for song, this may take a few seconds.")
