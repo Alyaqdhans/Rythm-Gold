@@ -33,6 +33,7 @@ intents = discord.Intents.default()
 intents.members = True
 loop = False
 sk = False
+p = False
 
 bot = commands.Bot(command_prefix="$", intents=intents)
 colour = discord.Colour.dark_gold()
@@ -188,6 +189,7 @@ class Player(commands.Cog):
     @commands.command(aliases=["p"])
     async def play(self, ctx, *, song=None):
         global loop
+        global p
         if ctx.author.voice is None:
             embed = discord.Embed(colour=colour, description='⛔ **You are not connected to any voice channel.**')
             return await ctx.send(embed=embed)
@@ -208,6 +210,11 @@ class Player(commands.Cog):
             embed = discord.Embed(colour=colour, description='⛔ **I am not currently playing any songs for you.**')
             return await ctx.send(embed=embed)
 
+        if p:
+            embed = discord.Embed(colour=colour, description='❌ **There is already a song in process, try again later.**')
+            return await ctx.send(embed=embed)
+
+        p = True
         # handle song where song isn't url
         if not ("youtube.com/watch?" in song or "https://youtu.be/" in song):
             #await ctx.send("Searching for song, this may take a few seconds.")
@@ -252,6 +259,7 @@ class Player(commands.Cog):
                 durs = await self.time_format(vduration)
                 embs.add_field(name="Duration", value=f"`{durs}`")
                 embs.set_footer(text=f"{queue_len} song(s) in the queue.")
+                p = False
                 return await temp.edit(embed=embs)
         
             #await ctx.send(f"Now playing **{entry['title']}**")
@@ -265,6 +273,7 @@ class Player(commands.Cog):
             emb.add_field(name="Duration", value=f"`{dur}`")
 
         await self.play_song(ctx, song)
+        p = False
         await temp.edit(embed=emb)
 
         global music
