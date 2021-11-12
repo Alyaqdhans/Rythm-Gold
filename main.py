@@ -191,6 +191,7 @@ class Player(commands.Cog):
     @commands.command(aliases=["p"])
     async def play(self, ctx, *, song=None):
         global loop
+        global musics
         global p
         if ctx.author.voice is None:
             embed = discord.Embed(colour=colour, description='⛔ **You are not connected to any voice channel.**')
@@ -252,7 +253,12 @@ class Player(commands.Cog):
                 return await temp.edit(embed=embed)
             if ctx.voice_client.source is not None:
                 queue_len = len(self.song_queue[ctx.guild.id])
-                self.song_queue[ctx.guild.id].append(song2)
+                if loop:
+                    self.song_queue[ctx.guild.id].pop(-1)
+                    self.song_queue[ctx.guild.id].append(song2)
+                    self.song_queue[ctx.guild.id].append(musics)
+                else:
+                    self.song_queue[ctx.guild.id].append(song2)
                 #return await ctx.send(f"I am currently playing a song, this song has been added to the queue at position {queue_len+1}.")
                 embs = discord.Embed(colour=colour, title='Added to the queue', description=f"[{vtitle}]({song2})")
                 embs.set_thumbnail(url=vthumbnail)
@@ -279,9 +285,6 @@ class Player(commands.Cog):
         await temp.edit(embed=emb)
         p = False
 
-        global music
-        music = song2
-        global musics
         musics = song2
 
     @commands.command(aliases=["np"])
@@ -340,7 +343,7 @@ class Player(commands.Cog):
             await ctx.send(embed=embed)
         else:
             #await ctx.send("Loop mode is **On**.")
-            self.song_queue[ctx.guild.id].append(music)
+            self.song_queue[ctx.guild.id].append(musics)
             loop = True
             embed = discord.Embed(colour=colour, description="🔄 **Loop Mode** `✅︱ON`")
             await ctx.send(embed=embed)
