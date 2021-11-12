@@ -133,7 +133,7 @@ class Player(commands.Cog):
             if len(self.song_queue[ctx.guild.id]) > 0:
                 self.song_queue[ctx.guild.id] = []
             loop = False
-            embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play [song]({song}), disconnected.**')
+            embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play [song]({song}).**')
             await ctx.send(embed=embed)
 
         global musics
