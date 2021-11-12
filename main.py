@@ -1,8 +1,8 @@
 import asyncio
-import pafy
 import discord
 from discord.ext import commands
 from youtube_dl import YoutubeDL
+#import pafy
 #import os
 #import keep_alive
 #from time import strftime
