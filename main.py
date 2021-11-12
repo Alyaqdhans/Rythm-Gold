@@ -29,9 +29,6 @@ FFMPEG_OPTIONS = {
   'options': '-vn',
 }
 
-ydl = YoutubeDL(YDL_OPTIONS)
-ydl.cache.remove()
-
 intents = discord.Intents.default()
 intents.members = True
 loop = False
@@ -125,6 +122,8 @@ class Player(commands.Cog):
         #url = pafy.new(song).getbestaudio().url
         #ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS)), after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
         try:
+            ydl = YoutubeDL(YDL_OPTIONS)
+            ydl.cache.remove()
             info = ydl.extract_info(song, download=False)
             url2 = info['formats'][0]['url']
             source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
@@ -244,6 +243,8 @@ class Player(commands.Cog):
             temp = await ctx.send(embed=embed)
 
         try:
+            ydl = YoutubeDL(YDL_OPTIONS)
+            ydl.cache.remove()
             info_dict = ydl.extract_info(song2, download=False)
             vtitle = info_dict.get('title', None)
             vthumbnail = info_dict.get('thumbnail', None)
@@ -298,6 +299,8 @@ class Player(commands.Cog):
         temp = await ctx.send(embed=embed)
         queue_len = len(self.song_queue[ctx.guild.id])
         try:
+            ydl = YoutubeDL(YDL_OPTIONS)
+            ydl.cache.remove()
             info_dict = ydl.extract_info(musics, download=False)
             vtitle = info_dict.get('title', None)
             vthumbnail = info_dict.get('thumbnail', None)
@@ -398,6 +401,8 @@ class Player(commands.Cog):
         qd = 0
         try:
             for url in self.song_queue[ctx.guild.id]:
+                ydl = YoutubeDL(YDL_OPTIONS)
+                ydl.cache.remove()
                 info_dict = ydl.extract_info(url, download=False)
                 title = info_dict.get('title', None)
                 duration = info_dict.get('duration', None)
