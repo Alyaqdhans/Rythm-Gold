@@ -119,14 +119,14 @@ class Player(commands.Cog):
             await ctx.send(embed=embed)
 
     async def play_song(self, ctx, song):
-        #with YoutubeDL(YDL_OPTIONS) as ydl:
-            #info = ydl.extract_info(song, download=False)
-            #url2 = info['formats'][0]['url']
-            #source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
-            #ctx.voice_client.play(source, after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
+        #url = pafy.new(song).getbestaudio().url
+        #ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS)), after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
         try:
-            url = pafy.new(song).getbestaudio().url
-            ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS)), after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
+            with YoutubeDL(YDL_OPTIONS) as ydl:
+                info = ydl.extract_info(song, download=False)
+                url2 = info['formats'][0]['url']
+                source = await discord.FFmpegOpusAudio.from_probe(url2, **FFMPEG_OPTIONS)
+                ctx.voice_client.play(source, after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
         except:
             global loop
             await ctx.voice_client.disconnect()
