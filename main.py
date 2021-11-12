@@ -129,8 +129,7 @@ class Player(commands.Cog):
             ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS)), after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
         except:
             self.song_queue[ctx.guild.id].append(song)
-            if not len(self.song_queue[ctx.guild.id]) > 0:
-                self.check_queue(ctx)
+            self.check_queue(ctx)
             embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play [song]({song}), it has been re added to the queue.**')
             await ctx.send(embed=embed)
 
