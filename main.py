@@ -128,7 +128,9 @@ class Player(commands.Cog):
             url = pafy.new(song).getbestaudio().url
             ctx.voice_client.play(discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(url, **FFMPEG_OPTIONS)), after=lambda error: self.bot.loop.create_task(self.check_queue(ctx)))
         except:
-            self.song_queue[ctx.guild.id].append(song)
+            for url in self.song_queue[ctx.guild.id]:
+                if not song == url:
+                    self.song_queue[ctx.guild.id].append(song)
             self.check_queue(ctx)
             embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play [song]({song}), it has been re added to the queue.**')
             await ctx.send(embed=embed)
