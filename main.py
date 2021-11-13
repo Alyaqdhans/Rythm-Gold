@@ -35,7 +35,7 @@ loop = False
 sk = False
 p = False
 
-bot = commands.Bot(command_prefix="$", intents=intents)
+bot = commands.Bot(command_prefix="$", case_insensitive=True, intents=intents)
 colour = discord.Colour.dark_gold()
 
 @bot.event
