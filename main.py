@@ -94,14 +94,14 @@ class Player(commands.Cog):
             if not len(memids) > 0:
                 await ctx.voice_client.disconnect()
                 if len(self.song_queue[ctx.guild.id]) > 0:
-                    self.song_queue[ctx.guild.id] = []
+                    self.song_queue[ctx.guild.id].clear()
                 loop = False
                 embed = discord.Embed(colour=colour, description='☠ **The queue has been force ended.**')
                 embed.set_footer(text="Because no one is in the voice channel.")
                 return await ctx.send(embed=embed)
         else:
             if len(self.song_queue[ctx.guild.id]) > 0:
-                self.song_queue[ctx.guild.id] = []
+                self.song_queue[ctx.guild.id].clear()
             loop = False
             #embed = discord.Embed(colour=colour, description=f'☹ **Why you discconect me like that.**')
             return #await ctx.send(embed=embed)
@@ -132,7 +132,7 @@ class Player(commands.Cog):
             global loop
             await ctx.voice_client.disconnect()
             if len(self.song_queue[ctx.guild.id]) > 0:
-                self.song_queue[ctx.guild.id] = []
+                self.song_queue[ctx.guild.id].clear()
             loop = False
             embed = discord.Embed(colour=colour, description=f'☹ **Something went wrong while trying to play [song]({song}).**')
             await ctx.send(embed=embed)
@@ -232,6 +232,8 @@ class Player(commands.Cog):
             if result is None:
                 #return await ctx.send("Sorry, I could not find the given song, try using my search command.")
                 embed = discord.Embed(colour=colour, description='☹ **Sorry, I could not find the given song, try again or use my search command.**')
+                if not len(self.song_queue[ctx.guild.id]) > 0:
+                    await ctx.voice_client.disconnect()
                 return await temp.edit(embed=embed)
 
             song2 = result[0]
@@ -252,6 +254,8 @@ class Player(commands.Cog):
             vduration = info_dict.get('duration', None)
         except:
             embed = discord.Embed(colour=colour, description='☹ **Failed to download the song, try again or use my search command.**')
+            if not len(self.song_queue[ctx.guild.id]) > 0:
+                await ctx.voice_client.disconnect()
             return await temp.edit(embed=embed)
         if ctx.voice_client.source is not None:
             queue_len = len(self.song_queue[ctx.guild.id])
@@ -576,7 +580,7 @@ class Player(commands.Cog):
                 embed = discord.Embed(colour=colour, description='❌ **The queue is already clear.**')
                 return await ctx.send(embed=embed)
 
-            self.song_queue[ctx.guild.id] = []
+            self.song_queue[ctx.guild.id].clear()
             #await ctx.send("The queue has been cleared.")
             embed = discord.Embed(colour=colour, description='✅ **The queue has been cleared.**')
             await ctx.send(embed=embed)
