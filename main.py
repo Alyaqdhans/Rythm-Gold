@@ -215,7 +215,7 @@ class Player(commands.Cog):
             return await ctx.send(embed=embed)
 
         if p:
-            embed = discord.Embed(colour=colour, description='❌ **There is already a song in process, try again later.**')
+            embed = discord.Embed(colour=colour, description='❌ **There is a song in process, try again in a few moments.**')
             return await ctx.send(embed=embed)
 
         p = True
@@ -260,9 +260,7 @@ class Player(commands.Cog):
         if ctx.voice_client.source is not None:
             queue_len = len(self.song_queue[ctx.guild.id])
             if loop:
-                self.song_queue[ctx.guild.id].pop(-1)
-                self.song_queue[ctx.guild.id].append(song2)
-                self.song_queue[ctx.guild.id].append(musics)
+                self.song_queue[ctx.guild.id].insert(-1, song2)
             else:
                 self.song_queue[ctx.guild.id].append(song2)
             #return await ctx.send(f"I am currently playing a song, this song has been added to the queue at position {queue_len+1}.")
@@ -530,7 +528,7 @@ class Player(commands.Cog):
         if role in ctx.author.roles:
             global sk
             if sk:
-                embed = discord.Embed(colour=colour, description='❌ **Skip vote is in progress.**')
+                embed = discord.Embed(colour=colour, description='❌ **Vote skip is in progress.**')
                 return await ctx.send(embed=embed)
 
             if ctx.voice_client is None or ctx.voice_client.source is None:
