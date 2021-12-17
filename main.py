@@ -322,7 +322,7 @@ class Player(commands.Cog):
         emb.set_footer(text=f"{queue_len} song(s) in the queue.")
         await temp.edit(embed=emb)
 
-    @commands.command()
+    @commands.command(aliases=["repeat"])
     async def loop(self, ctx):
         if ctx.voice_client is None or ctx.voice_client.source is None:
             #return await ctx.send("I am not playing any song.")
