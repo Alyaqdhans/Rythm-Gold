@@ -38,34 +38,12 @@ p = False
 bot = commands.Bot(command_prefix="$", case_insensitive=True, intents=intents)
 colour = discord.Colour.dark_gold()
 
+bot.remove_command("help")
+
 @bot.event
 async def on_ready():
     print(f"{bot.user.name} is ready.")
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="$help"))
-
-class NewHelpName(commands.MinimalHelpCommand):
-    async def send_pages(self):
-        destination = self.get_destination()
-        for page in self.paginator.pages:
-            em = discord.Embed(colour=colour)
-            em.add_field(name = "$play", value = "Plays music by name or youtube link.")
-            em.add_field(name = "$stop", value = "Stops the player (Requires DJ role).")
-            em.add_field(name = "$search", value = "Searches 10 youtube links for the song name.")
-            em.add_field(name = "$skip", value = "Runs the vote skip for the current song.")
-            em.add_field(name = "$forceskip ($fs)", value = "Force skips the current song (Requires DJ role).")
-            em.add_field(name = "$queue", value = "Checks for the current songs in the queue.")
-            em.add_field(name = "$pause", value = "Pauses the playing song.")
-            em.add_field(name = "$resume", value = "Resumes the paused song.")
-            em.add_field(name = "$loop", value = "Repeats the songs in the queue.")
-            em.add_field(name = "$remove", value = "Removes a specific song from the queue (Requires DJ role).")
-            em.add_field(name = "$clear", value = "Clears the songs in the queue (Requires DJ role).")
-            em.add_field(name = "$nowplaying ($np)", value = "Shows the current playing song.")
-
-            """
-            em.description = "**Commands:**\n **$play** plays music by name or youtube link.\n **$search** searches 10 youtube links for the song name.\n **$skip** runs the vote skip for the current song.\n **$queue** checks for the current songs in the queue.\n **$pause** pauses the playing song.\n **$resume** resumes the paused song.\n **$loop** repeats the songs in the queue.\n\n **Commands that requires DJ role:**\n **$stop** stops the current playing music, clears the queue, and discconects the bot.\n **$fs** force skips the current song.\n **$clear** clears the songs in the queue.\n **$remove** removes a specific song from the queue."
-            """
-            await destination.send(embed=em)
-bot.help_command = NewHelpName()
 
 class Player(commands.Cog):
     def __init__(self, bot):
@@ -156,6 +134,24 @@ class Player(commands.Cog):
             #else:
                 #dur = strftime("%H:%M:%S", gmtime(vduration))
   
+    @commands.command()
+    async def help(self, ctx):
+        em = discord.Embed(colour=colour)
+        em.add_field(name = "$play", value = "Plays music by name or youtube link.")
+        em.add_field(name = "$stop", value = "Stops the player (Requires DJ role).")
+        em.add_field(name = "$search", value = "Searches 10 youtube links for the song name.")
+        em.add_field(name = "$skip", value = "Runs the vote skip for the current song.")
+        em.add_field(name = "$forceskip ($fs)", value = "Force skips the current song (Requires DJ role).")
+        em.add_field(name = "$queue", value = "Checks for the current songs in the queue.")
+        em.add_field(name = "$pause", value = "Pauses the playing song.")
+        em.add_field(name = "$resume", value = "Resumes the paused song.")
+        em.add_field(name = "$loop", value = "Repeats the songs in the queue.")
+        em.add_field(name = "$remove", value = "Removes a specific song from the queue (Requires DJ role).")
+        em.add_field(name = "$clear", value = "Clears the songs in the queue (Requires DJ role).")
+        em.add_field(name = "$nowplaying ($np)", value = "Shows the current playing song.")
+
+        await ctx.send(embed=em)
+
     @commands.command()
     async def ping(self, ctx):
         #await ctx.send(f"My ping is {round(bot.latency*1000)}.")
