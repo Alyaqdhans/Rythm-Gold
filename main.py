@@ -211,7 +211,7 @@ class Player(commands.Cog):
             return await ctx.send(embed=embed)
 
         if ctx.voice_client.source is None:
-            p = True
+            p = False
 
         if p:
             embed = discord.Embed(colour=colour, description='❌ **There is a song in process, try again in a few moments.**')
