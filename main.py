@@ -149,7 +149,6 @@ class Player(commands.Cog):
         em.add_field(name = "$remove", value = "Removes a specific song from the queue (Requires DJ role).")
         em.add_field(name = "$clear", value = "Clears the songs in the queue (Requires DJ role).")
         em.add_field(name = "$nowplaying ($np)", value = "Shows the current playing song.")
-
         await ctx.send(embed=em)
 
     @commands.command()
@@ -204,7 +203,11 @@ class Player(commands.Cog):
             return await ctx.send(embed=embed)
 
         if ctx.voice_client is None:
-            await ctx.author.voice.channel.connect()
+            try:
+                await ctx.author.voice.channel.connect()
+            except:
+                embed = discord.Embed(colour=colour, description='☹ **Failed to connect to the channel.**')
+                return await ctx.send(embed=embed)
 
         if ctx.author.voice.channel.id != ctx.voice_client.channel.id:
             embed = discord.Embed(colour=colour, description='⛔ **I am not currently playing any songs for you.**')
