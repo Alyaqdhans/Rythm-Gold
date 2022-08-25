@@ -650,4 +650,4 @@ async def setup():
 
 #keep_alive.keep_alive()
 bot.loop.create_task(setup())
-bot.run("ODk4NTU4NzcxOTQzNjA0MjQ0.YWl-EQ.w34gsVHC65T3gaMKvtVrwS1T6_A")
+bot.run("ODk4NTU4NzcxOTQzNjA0MjQ0.Gxa0_X.OPv_bASlpuIRJ3qEoleuOAYZPMI-JHAdGgsrRs")
