@@ -198,7 +198,7 @@ class Player(commands.Cog):
             embed = discord.Embed(colour=colour, description='❌ **You must include a song to play.**')
             return await ctx.send(embed=embed)
 
-        if "youtube.com/playlist?" in song:
+        if "youtube.com/playlist?" in song or "list" in song:
             embed = discord.Embed(colour=colour, description='❌ **Cannot play playlists.**')
             return await ctx.send(embed=embed)
 
