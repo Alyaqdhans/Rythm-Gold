@@ -1,3 +1,5 @@
+bot_token = "your_bot_token" #change the string to your bot token
+
 import asyncio
 import discord
 from discord.ext import commands
@@ -611,4 +613,4 @@ async def setup():
     bot.add_cog(Player(bot))
 
 bot.loop.create_task(setup())
-bot.run("ODk4NTU4NzcxOTQzNjA0MjQ0.Gxa0_X.OPv_bASlpuIRJ3qEoleuOAYZPMI-JHAdGgsrRs")
+bot.run(bot_token)
